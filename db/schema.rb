@@ -35,6 +35,30 @@ ActiveRecord::Schema.define(version: 20160625062916) do
   add_index "line_items", ["order_id"], name: "index_line_items_on_order_id", using: :btree
   add_index "line_items", ["product_id"], name: "index_line_items_on_product_id", using: :btree
 
+  create_table "map_permissions", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "map_id"
+    t.boolean "isfavorite"
+    t.boolean "isauthenticated"
+    t.boolean "iscontributor"
+  end
+
+  create_table "maps", force: :cascade do |t|
+    t.integer "owner_id"
+    t.string  "title",               limit: 255,                null: false
+    t.string  "thumbnail_photo_url", limit: 255
+    t.boolean "ispublic",                        default: true
+  end
+
+  create_table "markers", force: :cascade do |t|
+    t.integer "map_id"
+    t.string  "latlng",         limit: 255, null: false
+    t.string  "title",          limit: 255, null: false
+    t.string  "description",    limit: 255, null: false
+    t.string  "image_url",      limit: 255
+    t.string  "image_alt_text", limit: 255
+  end
+
   create_table "orders", force: :cascade do |t|
     t.integer  "total_cents"
     t.datetime "created_at",       null: false
@@ -56,7 +80,18 @@ ActiveRecord::Schema.define(version: 20160625062916) do
 
   add_index "products", ["category_id"], name: "index_products_on_category_id", using: :btree
 
+  create_table "users", force: :cascade do |t|
+    t.string "handle",     limit: 255, null: false
+    t.string "email",      limit: 255, null: false
+    t.string "password",   limit: 255, null: false
+    t.string "avatar_url", limit: 255
+  end
+
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
+  add_foreign_key "map_permissions", "maps", name: "map_permissions_map_id_fkey", on_delete: :cascade
+  add_foreign_key "map_permissions", "users", name: "map_permissions_user_id_fkey", on_delete: :cascade
+  add_foreign_key "maps", "users", column: "owner_id", name: "maps_owner_id_fkey", on_delete: :cascade
+  add_foreign_key "markers", "maps", name: "markers_map_id_fkey", on_delete: :cascade
   add_foreign_key "products", "categories"
 end
