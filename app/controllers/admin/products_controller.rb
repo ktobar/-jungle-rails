@@ -1,5 +1,7 @@
 class Admin::ProductsController < ApplicationController
 
+  http_basic_authenticate_with :name => ENV['JUNGLE_ADMIN_NAME'], :password => ENV["JUNGLE_ADMIN_PASSWORD"], :except => :index
+
   def index
     @products = Product.order(id: :desc).all
   end
