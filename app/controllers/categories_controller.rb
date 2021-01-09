@@ -1,4 +1,6 @@
 class CategoriesController < ApplicationController
+  # line below is to user logged in user to view this page
+  # before_filter :authorize
 
   def show
     @category = Category.find(params[:id])
