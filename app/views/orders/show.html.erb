@@ -3,16 +3,36 @@
   <header class="page-header">
     <h1>Order #<%= @order.id %></h1>
   </header>
-
+  
   <div class="order-summary jumbotron">
-    <h4>Thank you for your order!</h4>
-    <tbody>
-    <% @order.line_items.each do |item| %>
-    <%= render 'lineItems', product: item.product, quantity: item.quantity.to_i %>
-    <% end %>
-    <h3>Total: <%= humanized_money_with_symbol @order.total_cents / 100.0 %> </h3>
-    <h3>Ordered By: <%= @order.email %></h3>
-    </tbody>
+    <div class="panel panel-default items">
+      <table class="table table-bordered">
+        <thead>
+          <h3>Ordered By: <%= @order.email %></h3>
+          <tr>
+            <th colspan="2">Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+      <% @order.line_items.each do |item| %>
+      <%= render 'lineItems', product: item.product, quantity: item.quantity.to_i %>
+      <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="4">
+              TOTAL:
+            </th>
+            <th>
+              <%= humanized_money_with_symbol @order.total_cents / 100.0 %>
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 
   <%= link_to "Continue Shopping", root_path, class: 'btn btn-lg btn-primary' %>
